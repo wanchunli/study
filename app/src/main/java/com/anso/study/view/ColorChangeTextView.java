@@ -19,6 +19,8 @@ import com.anso.study.R;
 
 public class ColorChangeTextView extends AppCompatTextView {
 
+    private static final String TAG = "Wan";
+
     public static final int DIRECTION_LEFT = 0;
     public static final int DIRECTION_RIGHT = 1;
     public static final int DIRECTION_TOP = 2;
@@ -30,7 +32,6 @@ public class ColorChangeTextView extends AppCompatTextView {
     private int startY;
     private int mTextWidth;
     private int mTextHeight;
-    private float percent;
 
     private String mText = "享学课堂";//成员变量
     private int mTextSize = sp2px(30);
@@ -85,6 +86,14 @@ public class ColorChangeTextView extends AppCompatTextView {
         mLinePaint.setStrokeWidth(dp2px(3));
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setColor(Color.GREEN);
+    }
+
+    public int getmDirection() {
+        return mDirection;
+    }
+
+    public void setmDirection(int mDirection) {
+        this.mDirection = mDirection;
     }
 
     @Override
@@ -151,26 +160,78 @@ public class ColorChangeTextView extends AppCompatTextView {
         super.onDraw(canvas);
         switch (mDirection){
             case DIRECTION_LEFT:
-                //先设置改变的颜色
-                mTextPaint.setColor(mTextColorChange);
-                //绘制原始的文字
+                canvas.save();
+                //剪裁
+                canvas.clipRect(startX + (int) (mTextWidth * mProgress)
+                        ,getMeasuredHeight() / 2 - mTextHeight / 2
+                        ,startX + mTextWidth
+                        ,getMeasuredHeight() / 2 + mTextHeight / 2);
+                mTextPaint.setColor(mTextColor);
+                canvas.drawText(mText, startX, startY, mTextPaint);
+                canvas.restore();
 
-                //绘制变化的文字
+                canvas.save();
+                canvas.clipRect(startX
+                        ,getMeasuredHeight() / 2 - mTextHeight / 2
+                        ,startX + (int) (mTextWidth * mProgress)
+                        ,getMeasuredHeight() / 2 + mTextHeight / 2);
+                mTextPaint.setColor(mTextColorChange);
+                canvas.drawText(mText, startX, startY, mTextPaint);
+                canvas.restore();
+
+
                 break;
             case DIRECTION_RIGHT:
+                //绘制原始的文字
+                canvas.save();
+                //剪裁
+                canvas.clipRect(startX + (int) (mTextWidth * (1-mProgress)),
+                        getMeasuredHeight() / 2 - mTextHeight / 2,
+                        startX + mTextWidth,
+                        getMeasuredHeight() / 2 + mTextHeight / 2);
+                mTextPaint.setColor(mTextColorChange);
+                canvas.drawText(mText, startX, startY, mTextPaint);
+                canvas.restore();
+                //绘制变化的文字
+                canvas.save();
+                //剪裁
+                canvas.clipRect(startX ,
+                        getMeasuredHeight() / 2 - mTextHeight / 2,
+                        startX + + (int) (mTextWidth * (1-mProgress)),
+                        getMeasuredHeight() / 2 + mTextHeight / 2);
+                mTextPaint.setColor(mTextColor);
+                canvas.drawText(mText, startX, startY, mTextPaint);
+                canvas.restore();
                 break;
             case DIRECTION_TOP:
+                Log.i(TAG, "DIRECTION_TOP = " + DIRECTION_TOP);
+                //先绘制改变的颜色
+                drawTextVertical(canvas, mTextColorChange, startY,
+                        (int) (startY + mProgress * mTextHeight));
+                //后绘制没改变的
+
+                drawTextVertical(canvas, mTextColor,
+                        (int) (startY + mProgress * mTextHeight), startY + mTextHeight);
                 break;
             case DIRECTION_BOTTOM:
+                Log.i(TAG, "DIRECTION_BOTTOM = " + DIRECTION_BOTTOM);
+                //先绘制改变的颜色
+                drawTextVertical(canvas, mTextColorChange,
+                        (int) (startY + (1 - mProgress) * mTextHeight), startY + mTextHeight);
+                //后绘制没改变的
+                drawTextVertical(canvas, mTextColor, startY,
+                        (int) (startY + (1 - mProgress) * mTextHeight));
+                break;
+            default:
                 break;
         }
-        drawOriText(canvas);
-        drawNewText(canvas);
+//        drawOriText(canvas);
+//        drawNewText(canvas);
     }
 
     private void drawOriText(Canvas canvas) {
         canvas.save();
-        int left = startX + (int) (mTextWidth * percent);
+        int left = startX + (int) (mTextWidth * mProgress);
         int top = getMeasuredHeight() / 2 - mTextHeight / 2;
         int right = startX + mTextWidth;
         int bottom = getMeasuredHeight() / 2 + mTextHeight / 2;
@@ -186,7 +247,7 @@ public class ColorChangeTextView extends AppCompatTextView {
 
         int left = startX;
         int top = getMeasuredHeight() / 2 - mTextHeight / 2;
-        int right = startX + (int) (mTextWidth * percent);
+        int right = startX + (int) (mTextWidth * mProgress);
         int bottom = getMeasuredHeight() / 2 + mTextHeight / 2;
 //        mTextPaint.setColor(Color.BLUE);
 //        mTextPaint.setStyle(Paint.Style.STROKE);//不填充
@@ -199,12 +260,34 @@ public class ColorChangeTextView extends AppCompatTextView {
     }
 
     public float getPercent() {
-        return percent;
+        return mProgress;
     }
 
     public void setPercent(float percent) {
-        this.percent = percent;
+        this.mProgress = percent;
         invalidate();
+    }
+
+    private void drawTextHorizontal(Canvas canvas, int color, int startX, int endX) {
+        mTextPaint.setColor(color);
+
+        canvas.save();
+        canvas.clipRect(startX, 0, endX, getMeasuredHeight());
+        canvas.drawText(mText, startX,
+                getMeasuredHeight() / 2
+                        - ((mTextPaint.descent() + mTextPaint.ascent()) / 2), mTextPaint);
+        canvas.restore();
+    }
+
+    private void drawTextVertical(Canvas canvas, int color, int startY, int endY) {
+        mTextPaint.setColor(color);
+
+        canvas.save();
+        canvas.clipRect(0, startY, getMeasuredWidth(), endY);
+        canvas.drawText(mText, startX,
+                getMeasuredHeight() / 2
+                        - ((mTextPaint.descent() + mTextPaint.ascent()) / 2), mTextPaint);
+        canvas.restore();
     }
 
     static int dp2px(float dp) {
