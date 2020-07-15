@@ -1,0 +1,37 @@
+<resources>
+    <attr name="position">
+        <enum name="left_top" value="0" />
+        <enum name="right_top" value="1" />
+        <enum name="left_bottom" value="2" />
+        <enum name="right_bottom" value="3" />
+    </attr>
+    <attr name="radius" format="dimension" />
+
+
+    <declare-styleable name="ArcMenu">
+        <attr name="position" />
+        <attr name="radius" />
+    </declare-styleable>
+
+    <attr name="text" format="string|reference"/>
+    <attr name="text_size" format="dimension"/>
+    <attr name="text_color" format="color|reference"/>
+    <attr name="text_color_change" format="color|reference"/>
+    <attr name="progress" format="float"/>
+    <attr name="direction">
+        <enum name="left" value ="0"/>
+        <enum name="right" value ="1"/>
+        <enum name="top" value ="2"/>
+        <enum name="bottom" value ="3"/>
+    </attr>
+
+    <declare-styleable name="ColorChangeTextView1">
+        <attr name="text"/>
+        <attr name="text_size"/>
+        <attr name="text_color"/>
+        <attr name="text_color_change"/>
+        <attr name="progress"/>
+        <attr name="direction"/>
+    </declare-styleable>
+
+</resources>

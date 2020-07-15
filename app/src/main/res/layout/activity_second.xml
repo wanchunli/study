@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout >
+<!--    刷新-->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+<!--        外层父亲NestedScrollView-->
+        <com.anso.study.view.NestScrollViewLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+<!--                HeaderView-->
+                <com.anso.study.view.ScrollDisableRecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+<!--                    TabLayout-->
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tablayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></com.google.android.material.tabs.TabLayout>
+
+<!--                    ViewPager-->
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/viewpager_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.anso.study.view.NestScrollViewLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</layout>
