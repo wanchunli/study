@@ -1,2 +1,4 @@
+include ':webview'
+include ':wan'
 rootProject.name='Study'
 include ':app', ':base'
