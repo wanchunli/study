@@ -1,0 +1,37 @@
+Handler  sendMessage...
+--------->messageQueue.enqueueMessage //把消息放到消息队列，队列的插入节点
+--------->Looper.loop() 调用messageQueue.next()
+--------->messageQueue.next() 从队列中取消息
+--------->handler.dispathMessage()
+---------->handMessage
+子线程到主线程，内存不分线程
+数据结构：由单链表实现的优先级队列
+
+messageQueue.enqueueMessage 按照时间进行插入排序
+
+Looper：构造函数，loop(),ThreadLocal
+初始化
+ThreadLocal,多线程，线程上下文的存储变量
+threadLocalMap---->key为threadLocalMap，value为Looper,
+所以：一个线程只有一个Looper,并且这个Looper不能修改
+
+final MessageQueue mQueueg跟随着Looper创建
+
+Handler面试
+1.一个线程可以有多个Handler
+2.如何保证一个线程只有一个Looper：Looper的prepare方法中会判断ThreadLocal.get looper对象是否为空，
+如果不为空则会抛出异常，表示每个线程只能拥有一个looper对象
+3.Handler内存泄露的原因：内部类持有外部类的引用，导致activity在destroy之后不能被回收，
+其他内部类为什么不会泄露，handler原理messagequeue会持有handler的对象，handler又持有了activity的，解决：
+4.为什么主线程可以new Handler，因为在ActivityThread中main方法对mainLooper进行初始化，接下来又执行了loop方法
+子线程new Handler必须要先prepare和loop
+5.子线程中维护的Looper，消息队列无消息时的处理方案是quitsafely,作用是释放内存防止内存泄露，释放线程
+6.既然可以存在多个Handler往messagequeue中添加数据（发消息时各个Handler可能处于不同的子线程中），
+内部如何保证线程安全的呢，无论是messagequeue存消息还是取消息，过程中都加了锁synchronized保证安全性，
+handlerdelay因为锁的存在，只能做到基本准确不完全准确
+7.Message如何创建，obtainMessage
+8.postdelay,消息队列为空的时候计算等待时间，wait
+
+
+
+
